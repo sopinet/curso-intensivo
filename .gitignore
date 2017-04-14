@@ -9,3 +9,6 @@
 /vendor/
 /bin/
 /composer.phar
+./idea
+/app/cache/.gitkeep
+/app/logs/.gitkeep
