@@ -2,9 +2,16 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
 
+services:
+    security.access.card_voter:
+        class:      AppBundle\Security\Authorization\Voter\CardVoter
+        public:     false
+        tags:
+           - { name: security.voter }
+
 framework:
     #esi:             ~
-    #translator:      { fallback: "%locale%" }
+    translator: ~
     secret:          "%secret%"
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
@@ -70,3 +77,8 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+fos_user:
+    db_driver: orm
+    firewall_name: main
+    user_class: AppBundle\Entity\User
