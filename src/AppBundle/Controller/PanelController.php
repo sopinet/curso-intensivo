@@ -7,6 +7,7 @@ use AppBundle\Repository\CardRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use JMS\DiExtraBundle\Annotation\Inject;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @Route("/panel")
@@ -86,11 +88,19 @@ class PanelController extends Controller
 
     /**
      * @Route("/previewCard/{card}", name="panel_previewCard")
+     * @Security("is_granted('view', card)")
      * @Method("GET")
      * @return Response
      */
     public function previewCardAction(Card $card)
     {
+        /**
+        También se puede comprobar el Voter a través de la anotación Security
+        if (false === $this->get('security.context')->isGranted('view', $card)) {
+            throw new AccessDeniedException('Unauthorised access!');
+        }
+        **/
+
         var_dump($this->request->query->all());
 
         // Lo hemos inyectado en el Controlador, así que ya no es necesario

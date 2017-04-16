@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -139,6 +140,10 @@ class CardController extends Controller
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Card entity.');
+        }
+
+        if (false === $this->get('security.context')->isGranted('edit', $entity)) {
+            throw new AccessDeniedException('Unauthorised access!');
         }
 
         $editForm = $this->createEditForm($entity);
