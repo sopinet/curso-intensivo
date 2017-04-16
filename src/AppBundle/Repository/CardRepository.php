@@ -28,7 +28,7 @@ class CardRepository extends EntityRepository
         $query = $queryBuilder->where('c.title LIKE :stringSearch')
             ->orWhere('c.subtitle LIKE :stringSearch')
             ->orWhere('c.description LIKE :stringSearch')
-            ->setParameter('stringSearch', $stringSearch)
+            ->setParameter('stringSearch', '%'.$stringSearch.'%')
             ->getQuery();
 
         return $query->getResult();
