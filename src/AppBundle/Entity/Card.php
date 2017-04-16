@@ -2,6 +2,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CardRepository")
@@ -18,6 +19,8 @@ class Card
 
     /**
      * @ORM\Column(type="string", length=20)
+     * @Assert\NotBlank()
+     * @Assert\Expression("not (value == this.getSubtitle())")
      */
     private $title;
 
@@ -33,6 +36,12 @@ class Card
 
     /**
      * @ORM\Column(type="integer", length=3)
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 100,
+     *      minMessage = "El valor debe ser mayor que 0",
+     *      maxMessage = "El valor no puede ser mayor que 100"
+     * )
      */
     private $probability;
 
