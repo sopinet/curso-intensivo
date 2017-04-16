@@ -7,14 +7,18 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class CardVoter implements VoterInterface
 {
+    const CREATE = 'create';
     const VIEW = 'view';
     const EDIT = 'edit';
+    const DELETE = 'delete';
 
     public function supportsAttribute($attribute)
     {
         return in_array($attribute, array(
+            self::CREATE,
             self::VIEW,
             self::EDIT,
+            self::DELETE
         ));
     }
 
@@ -59,12 +63,24 @@ class CardVoter implements VoterInterface
         }
 
         switch($attribute) {
+            case self::CREATE:
+                // Devuelve GRANTED, simplemente porque hay un usuario logueado
+                return VoterInterface::ACCESS_GRANTED;
+                break;
+
             case self::VIEW:
                 // Sea de quien sea la carta, se devuelve GRANTED
                 return VoterInterface::ACCESS_GRANTED;
                 break;
 
             case self::EDIT:
+                // Si la carta tiene usuario asignado y es el usuario logueado, se devuelve GRANTED
+                if ($card->getUser() != null && $user->getId() === $card->getUser()->getId()) {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
+                break;
+
+            case self::DELETE:
                 // Si la carta tiene usuario asignado y es el usuario logueado, se devuelve GRANTED
                 if ($card->getUser() != null && $user->getId() === $card->getUser()->getId()) {
                     return VoterInterface::ACCESS_GRANTED;

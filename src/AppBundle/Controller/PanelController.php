@@ -37,17 +37,6 @@ class PanelController extends Controller
      */
     public function dashboardAction()
     {
-        $url = $this->generateUrl('panel_previewCard', array('card' => '1'));
-
-        var_dump($url);
-
-        return new RedirectResponse($url);
-
-        // También se podría hacer la redirección a URL directamente
-        // return $this->redirect($url);
-
-        // También se podría devolver un String
-        // return new Response("dashboard");
         // return $this->render('dashboard.html.twig');
     }
 
@@ -56,11 +45,6 @@ class PanelController extends Controller
      */
     public function preferencesAction()
     {
-        $mailer = $this->get('mailer');
-        var_dump($mailer);
-
-        var_dump($this->container->getParameter('locale'));
-
         return new Response("preferences");
     }
 
@@ -94,46 +78,10 @@ class PanelController extends Controller
      */
     public function previewCardAction(Card $card)
     {
-        /**
-        También se puede comprobar el Voter a través de la anotación Security
-        if (false === $this->get('security.context')->isGranted('view', $card)) {
-            throw new AccessDeniedException('Unauthorised access!');
-        }
-        **/
-
-        var_dump($this->request->query->all());
-
-        // Lo hemos inyectado en el Controlador, así que ya no es necesario
-        // $entityManager = $this->get('doctrine.orm.entity_manager');
-
-        // No hace falta buscar la carta por ID, porque Symfony lo hace automáticamente
-        // $repositoryCard = $this->entityManager->getRepository("AppBundle:Card");
-        // $card = $repositoryCard->findOneBy(array('id' => $cardId));
-
-        if ($card == null) {
-            throw $this->createNotFoundException('The card does not exist');
-
-            // También se podría devolver un String y el código HTTP 404
-            // return new Response("notFound", Response::HTTP_NOT_FOUND);
-        }
-
         return $this->redirect(
             $this->generateUrl('panel_card_show', array(
                 'id' => $card->getId()
             ))
         );
-
-        // Se podría renderizar un TWIG para este Controlador
-        /**
-        return $this->render('previewCard.html.twig', array(
-            'cardNumber' => $cardId
-        ));
-        **/
-
-        // También se podría devolver un JSON
-        // return new JsonResponse(array('cardNumber' => $card));
-
-        // También se podría devolver simplemente un String
-        // return new Response("previewCard - ".$card);
     }
 }

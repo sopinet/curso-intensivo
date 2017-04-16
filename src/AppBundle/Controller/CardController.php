@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\User;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -10,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use AppBundle\Entity\Card;
 use AppBundle\Form\CardType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * Card controller.
@@ -28,9 +30,9 @@ class CardController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('AppBundle:Card')->findAll();
+        /** @var User $user */
+        $user = $this->getUser();
+        $entities = $user->getCards();
 
         return array(
             'entities' => $entities,
@@ -46,6 +48,9 @@ class CardController extends Controller
     public function createAction(Request $request)
     {
         $entity = new Card();
+        if (false === $this->get('security.context')->isGranted('create', $entity)) {
+            throw new AccessDeniedException('Unauthorised access!');
+        }
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
@@ -65,7 +70,7 @@ class CardController extends Controller
 
     /**
      * Creates a form to create a Card entity.
-     *
+     * @Security("is_granted('create', card)")
      * @param Card $entity The entity
      *
      * @return \Symfony\Component\Form\Form The form
@@ -92,6 +97,9 @@ class CardController extends Controller
     public function newAction()
     {
         $entity = new Card();
+        if (false === $this->get('security.context')->isGranted('create', $entity)) {
+            throw new AccessDeniedException('Unauthorised access!');
+        }
         $form   = $this->createCreateForm($entity);
 
         return array(
@@ -104,23 +112,16 @@ class CardController extends Controller
      * Finds and displays a Card entity.
      *
      * @Route("/{id}", name="panel_card_show")
+     * @Security("is_granted('view', card)")
      * @Method("GET")
      * @Template()
      */
-    public function showAction($id)
+    public function showAction(Card $card)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('AppBundle:Card')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Card entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
+        $deleteForm = $this->createDeleteForm($card->getId());
 
         return array(
-            'entity'      => $entity,
+            'entity'      => $card,
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -129,28 +130,17 @@ class CardController extends Controller
      * Displays a form to edit an existing Card entity.
      *
      * @Route("/{id}/edit", name="panel_card_edit")
+     * @Security("is_granted('edit', card)")
      * @Method("GET")
      * @Template()
      */
-    public function editAction($id)
+    public function editAction(Card $card)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('AppBundle:Card')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Card entity.');
-        }
-
-        if (false === $this->get('security.context')->isGranted('edit', $entity)) {
-            throw new AccessDeniedException('Unauthorised access!');
-        }
-
-        $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
+        $editForm = $this->createEditForm($card);
+        $deleteForm = $this->createDeleteForm($card->getId());
 
         return array(
-            'entity'      => $entity,
+            'entity'      => $card,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
@@ -158,15 +148,15 @@ class CardController extends Controller
 
     /**
     * Creates a form to edit a Card entity.
-    *
+    * @Security("is_granted('edit', card)")
     * @param Card $entity The entity
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createEditForm(Card $entity)
+    private function createEditForm(Card $card)
     {
-        $form = $this->createForm(new CardType(), $entity, array(
-            'action' => $this->generateUrl('panel_card_update', array('id' => $entity->getId())),
+        $form = $this->createForm(new CardType(), $card, array(
+            'action' => $this->generateUrl('panel_card_update', array('id' => $card->getId())),
             'method' => 'PUT',
         ));
 
@@ -178,55 +168,44 @@ class CardController extends Controller
      * Edits an existing Card entity.
      *
      * @Route("/{id}", name="panel_card_update")
+     * @Security("is_granted('edit', card)")
      * @Method("PUT")
      * @Template("AppBundle:Card:edit.html.twig")
      */
-    public function updateAction(Request $request, $id)
+    public function updateAction(Request $request, Card $card)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('AppBundle:Card')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Card entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createEditForm($entity);
+        $deleteForm = $this->createDeleteForm($card->getId());
+        $editForm = $this->createEditForm($card);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('panel_card_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('panel_card_edit', array('id' => $card->getId())));
         }
 
         return array(
-            'entity'      => $entity,
+            'entity'      => $card,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
     /**
      * Deletes a Card entity.
-     *
+     * @Security("is_granted('delete', card)")
      * @Route("/{id}", name="panel_card_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, $id)
+    public function deleteAction(Request $request, Card $card)
     {
-        $form = $this->createDeleteForm($id);
+        $form = $this->createDeleteForm($card->getId());
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('AppBundle:Card')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Card entity.');
-            }
-
-            $em->remove($entity);
+            $em->remove($card);
             $em->flush();
         }
 
