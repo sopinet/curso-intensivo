@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -20,6 +22,11 @@ class PanelController extends Controller
      * @Inject("request", strict = false)
      */
     private $request;
+
+    /**
+     * @Inject("doctrine.orm.entity_manager")
+     */
+    private $entityManager;
 
     /**
      * @Route("/", name="panel_dashboard")
@@ -54,23 +61,31 @@ class PanelController extends Controller
     }
 
     /**
-     * @Route("/previewCard/{card}", name="panel_previewCard")
+     * @Route("/previewCard/{cardId}", name="panel_previewCard")
      * @Method("GET")
      * @return Response
      */
-    public function previewCardAction($card)
+    public function previewCardAction($cardId)
     {
         var_dump($this->request->query->all());
 
+        // Lo hemos inyectado en el Controlador, así que ya no es necesario
+        // $entityManager = $this->get('doctrine.orm.entity_manager');
+
+        /** @var EntityRepository $repositoryCard */
+        $repositoryCard = $this->entityManager->getRepository("AppBundle:Card");
+
+        $card = $repositoryCard->findOneBy(array('id' => $cardId));
+
         if ($card == 0 || $card == null) {
-            throw $this->createNotFoundException('The product does not exist');
+            throw $this->createNotFoundException('The card does not exist');
 
             // También se podría devolver un String y el código HTTP 404
             // return new Response("notFound", Response::HTTP_NOT_FOUND);
         }
 
         return $this->render('previewCard.html.twig', array(
-            'cardNumber' => $card
+            'cardNumber' => $cardId
         ));
 
         // También se podría devolver un JSON
