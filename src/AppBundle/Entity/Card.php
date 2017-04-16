@@ -37,6 +37,11 @@ class Card
     private $probability;
 
     /**
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="cards")
+     */
+    private $user;
+    
+    /**
      * Get id
      *
      * @return integer 
@@ -136,5 +141,28 @@ class Card
     public function getProbability()
     {
         return $this->probability;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     * @return Card
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }
