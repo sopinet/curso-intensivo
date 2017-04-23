@@ -58,7 +58,7 @@ class GenerateCommand extends ContainerAwareCommand
         } else {
             $output->writeln('<comment>Carta encontrada en la base de datos.</comment>');
             $html = $this->getContainer()->get('templating')->render('previewCard.html.twig', array(
-                'cardNumber' => $card->getId()
+                'card' => $card
             ));
 
             $fs = new Filesystem();

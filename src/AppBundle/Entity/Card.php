@@ -10,6 +10,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Card
 {
+    public function getBackgroundColor() {
+        return "000000";
+    }
+
+    public function getTextColor() {
+        return "EAEAEA";
+    }
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id

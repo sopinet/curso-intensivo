@@ -1,1 +1,14 @@
-Esta es la carta número {{ cardNumber }}
+<style>
+    .styleColor {
+        background-color: #{{ card.backgroundColor }};
+        color: #{{ card.textColor }}
+    }
+</style>
+
+<div class="styleColor">
+    <p>Esta es la carta número {{ card.id }}</p>
+    <h1>{{ card.title }}</h1>
+    {% if card.subtitle is not null %}
+        <h2>{{ card.subtitle }}</h2>
+    {% endif %}
+</div>
