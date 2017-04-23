@@ -20,7 +20,8 @@
         "sensio/generator-bundle": "~2.3",
         "incenteev/composer-parameter-handler": "~2.0",
         "jms/di-extra-bundle": "^1.8",
-        "friendsofsymfony/user-bundle": "~1.3"
+        "friendsofsymfony/user-bundle": "~1.3",
+        "knplabs/knp-snappy-bundle": "^1.4"
     },
     "scripts": {
         "post-install-cmd": [

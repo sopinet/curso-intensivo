@@ -2,6 +2,9 @@
 // src/AppBundle/Command/GeneratePdfCommand.php
 namespace AppBundle\Command;
 
+use AppBundle\Entity\Card;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,6 +40,22 @@ class GenerateCommand extends ContainerAwareCommand
         if ($format == null) {
             $format = self::FORMAT_PDF;
         }
+
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
+        /** @var EntityRepository $repositoryCard */
+        $repositoryCard = $entityManager->getRepository("AppBundle:Card");
+        /** @var Card $card */
+        $card = $repositoryCard->findOneById($cardId);
+
+        $html = $this->getContainer()->get('templating')->render('previewCard.html.twig', array(
+            'cardNumber'  => $card->getId()
+        ));
+
+        $this->getContainer()->get('knp_snappy.pdf')->generateFromHtml(
+            $html,
+            'card.pdf'
+        );
 
         $output->writeln("Comando generate para cardId: ".$cardId. " y opción format: ".$format);
     }
