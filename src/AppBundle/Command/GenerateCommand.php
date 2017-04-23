@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class GenerateCommand extends ContainerAwareCommand
 {
@@ -52,11 +53,18 @@ class GenerateCommand extends ContainerAwareCommand
             'cardNumber'  => $card->getId()
         ));
 
-        $this->getContainer()->get('knp_snappy.pdf')->generateFromHtml(
-            $html,
-            'card.pdf'
-        );
+        $fs = new Filesystem();
+        if ($format == self::FORMAT_HTML) {
+            $fs->remove('card.html');
+            $fs->dumpFile('card.html', $html);
+        } else {
+            $fs->remove('card.pdf');
+            $this->getContainer()->get('knp_snappy.pdf')->generateFromHtml(
+                $html,
+                'card.pdf'
+            );
+        }
 
-        $output->writeln("Comando generate para cardId: ".$cardId. " y opción format: ".$format);
+        $output->writeln("Comando generate para cardId: ".$cardId. " y opción format: ".$format.". Ejecutado con éxito.");
     }
 }
