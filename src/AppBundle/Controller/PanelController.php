@@ -78,6 +78,19 @@ class PanelController extends Controller
      */
     public function previewCardAction(Card $card)
     {
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.entity_manager');
+
+        /** @var EntityRepository $repositoryCard */
+        $repositoryCard = $em->getRepository('AppBundle:Card');
+
+        $repositoryCard->findBy(
+            array('id' => $card),
+            array('probability' => 'DESC'),
+            1,
+            0
+        );
+
         return $this->redirect(
             $this->generateUrl('panel_card_show', array(
                 'id' => $card->getId()
