@@ -6,12 +6,12 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class GeneratePdfCommand extends ContainerAwareCommand
+class GenerateCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setName('app:generatePdf');
+            ->setName('app:generate');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
