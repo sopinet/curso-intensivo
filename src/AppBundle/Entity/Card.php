@@ -10,6 +10,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Card
 {
+    public function __toString()
+    {
+        return $this->getTitle();
+    }
+
     public function getBackgroundColor() {
         return "000000";
     }

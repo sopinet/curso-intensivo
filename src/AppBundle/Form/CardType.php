@@ -2,6 +2,8 @@
 
 namespace AppBundle\Form;
 
+use Doctrine\DBAL\Types\IntegerType;
+use Doctrine\DBAL\Types\StringType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -17,7 +19,7 @@ class CardType extends AbstractType
         $builder
             ->add('title')
             ->add('subtitle')
-            ->add('description')
+            ->add('description', null, array('required' => true))
             ->add('probability')
             ->add('user')
         ;
