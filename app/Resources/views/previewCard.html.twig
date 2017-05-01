@@ -1,7 +1,19 @@
 {% extends 'baseCard.html.twig' %}
 
-{% block content %}
+{% block css %}
+    {{ parent() }}
+    <style>
+        body {
+            background-color: #{{ card.backgroundColor }};
+            color: #{{ card.textColor }}
+        }
+    </style>
+{% endblock %}
 
+{% block content %}
+    {% if is_granted('edit', card) %}
+        <h3>Puede editar</h3>
+    {% endif %}
     <p>Esta es la carta número {{ card.id }}</p>
     <h1>{{ card.title }}</h1>
     {% if card.subtitle is not null %}

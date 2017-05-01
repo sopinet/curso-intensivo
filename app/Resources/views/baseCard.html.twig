@@ -9,12 +9,14 @@
 
     <title>{% block title %} curso-intensivo {% endblock %}</title>
 
-    {% stylesheets
-        'css/card.css'
-        'css/bootstrap.min.css'
-        filter='cssrewrite' %}
-        <link rel="stylesheet" href="{{ asset_url }}" />
-    {% endstylesheets %}
+    {% block css %}
+        {% stylesheets
+            'css/card.css'
+            'css/bootstrap.min.css'
+            filter='cssrewrite' %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+    {% endblock %}
 </head>
 
 
@@ -24,11 +26,13 @@
     {% endblock %}
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    {% stylesheets
-        'js/bootstrap.min.js'
-        output='js/compiled/all.js' %}
-        <script src="{{ asset_url }}"></script>
-    {% endstylesheets %}
+    {% block js %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        {% stylesheets
+            'js/bootstrap.min.js'
+            output='js/compiled/all.js' %}
+            <script src="{{ asset_url }}"></script>
+        {% endstylesheets %}
+    {% endblock %}
     </body>
 </html>
