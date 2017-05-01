@@ -77,7 +77,7 @@ class CardController extends Controller
      */
     private function createCreateForm(Card $entity)
     {
-        $form = $this->createForm(new CardType(), $entity, array(
+        $form = $this->createForm(new CardType($this->get('doctrine.orm.entity_manager')), $entity, array(
             'action' => $this->generateUrl('panel_card_create'),
             'method' => 'POST',
         ));
@@ -155,7 +155,7 @@ class CardController extends Controller
     */
     private function createEditForm(Card $card)
     {
-        $form = $this->createForm(new CardType(), $card, array(
+        $form = $this->createForm(new CardType($this->get('doctrine.orm.entity_manager')), $card, array(
             'action' => $this->generateUrl('panel_card_update', array('id' => $card->getId())),
             'method' => 'PUT',
         ));
