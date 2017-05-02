@@ -15,3 +15,6 @@ parameters:
 
     locale:            en
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    uglifyjs_binary:   /usr/local/bin/uglifyjs
+    uglifycss_binary:   /usr/local/bin/uglifycss

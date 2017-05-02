@@ -20,4 +20,8 @@
         <h2>{{ card.subtitle }}</h2>
     {% endif %}
 
+    {% for tag in card.tags %}
+        {{ tag.name }}
+    {% endfor %}
+
 {% endblock %}

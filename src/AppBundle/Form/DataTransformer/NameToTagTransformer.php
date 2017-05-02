@@ -46,6 +46,7 @@ class NameToTagTransformer implements DataTransformerInterface
         $tags = explode(",", $tagName);
         $tagsReturn = array();
         foreach($tags as $tagNameUnique) {
+            $tagNameUnique = trim($tagNameUnique);
             $tag = $this->entityManager
                 ->getRepository('AppBundle:Tag')
                 ->findOneByName($tagNameUnique)
