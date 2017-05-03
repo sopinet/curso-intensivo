@@ -5,6 +5,7 @@ namespace AppBundle\Command;
 use AppBundle\Entity\Card;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -42,7 +43,11 @@ class GenerateCommand extends ContainerAwareCommand
             $format = self::FORMAT_PDF;
         }
 
+        /** @var Logger $logger */
+        $logger = $this->getContainer()->get('logger');
+
         $output->writeln("Vamos a intentar generar la carta número ".$cardId." en formato ".$format."...");
+        $logger->info("Vamos a intentar generar la carta número ".$cardId." en formato ".$format."...");
 
         /** @var EntityManager $entityManager */
         $entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
