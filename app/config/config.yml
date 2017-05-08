@@ -80,10 +80,14 @@ fos_user:
     user_class: AppBundle\Entity\User
 
 monolog:
-    channels: ['pdf']
+    channels: ['pdf', 'listener']
     handlers:
         #pdf
         pdf:
             type: stream
             path: "%kernel.logs_dir%/logPdf.log"
             channels: [pdf]
+        listener:
+            type: stream
+            path: "%kernel.logs_dir%/logListener.log"
+            channels: [listener]

@@ -22,6 +22,8 @@ class NameToTagTransformer implements DataTransformerInterface
      */
     public function transform($tags)
     {
+        if (!is_array($tags)) return "";
+
         $tagString = "";
         /** @var Tag $tag */
         foreach($tags as $tag) {

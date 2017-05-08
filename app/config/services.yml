@@ -13,3 +13,9 @@ services:
     app.generate:
         class: AppBundle\Service\GenerateService
         arguments: ["@doctrine.orm.entity_manager", "@monolog.logger.pdf", "@templating", "@knp_snappy.pdf"]
+
+    app.cardListener:
+        class: AppBundle\EventListener\CardListener
+        arguments: ["@monolog.logger.listener"]
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
