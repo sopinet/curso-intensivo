@@ -12,6 +12,7 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
+        $this->get('app.generate')->generate();
         return $this->render('appDemo.html.twig');
     }
 }

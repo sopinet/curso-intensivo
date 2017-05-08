@@ -1,18 +1,8 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
+    - { resource: services.yml }
 
-services:
-    security.access.card_voter:
-        class:      AppBundle\Security\Authorization\Voter\CardVoter
-        public:     false
-        tags:
-           - { name: security.voter }
-    app.twig_extension:
-        class: AppBundle\Twig\VariousExtension
-        public: false
-        tags:
-            - { name: twig.extension }
 
 framework:
     #esi:             ~
@@ -88,3 +78,12 @@ fos_user:
     db_driver: orm
     firewall_name: main
     user_class: AppBundle\Entity\User
+
+monolog:
+    channels: ['pdf']
+    handlers:
+        #pdf
+        pdf:
+            type: stream
+            path: "%kernel.logs_dir%/logPdf.log"
+            channels: [pdf]
